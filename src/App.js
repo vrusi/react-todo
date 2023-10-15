@@ -40,11 +40,12 @@ function App() {
   };
 
   onAuthStateChanged(auth, (user) => {
-
     if (user) {
       setUser(user);
     }
   });
+
+  const isUserLoggedIn = user !== null;
 
   return (
     <div className="App">
@@ -55,7 +56,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={
-            <ProtectedRoute user={user}>
+            <ProtectedRoute isLoggedIn={isUserLoggedIn}>
               <Home user={user} />
             </ProtectedRoute>
           } />
