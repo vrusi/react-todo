@@ -2,12 +2,13 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getFirestore } from 'firebase/firestore/lite';
 import { useState } from "react";
-import { Route, Routes, Redirect } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import TaskeeAppBar from './components/AppBar';
 import Home from './components/Home';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
+import { Navigate } from 'react-router-dom';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCbALzKlJ9D2TAoVvZUCsgRPo_c92rRHIU",
@@ -50,17 +51,18 @@ function App() {
       <header>
         <TaskeeAppBar user={user} onLogout={handleLogout} />
       </header>
+
       <main>
         <Routes>
-
           <Route path="/" element={
             <ProtectedRoute user={user}>
               <Home user={user} />
             </ProtectedRoute>
           } />
 
-
-          <Route path="/login" element={<Login user={user} onLogin={handleLogin} />} />
+          <Route path="/login" element={
+            user ? <Navigate to="/" /> :
+              <Login user={user} onLogin={handleLogin} />} />
         </Routes>
       </main>
     </div>
