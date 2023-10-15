@@ -1,6 +1,6 @@
 import AddTaskOutlinedIcon from '@mui/icons-material/AddTaskOutlined';
 import { Button, Card, CardActions, CardContent, Grow, TextField } from "@mui/material";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { database } from '../firebase';
 
@@ -8,10 +8,12 @@ export default function Home({ user }) {
   const [newTodo, setNewTodo] = useState(null);
   const [todos, setTodos] = useState([]);
 
+  const userRef = doc(database, 'users', user.uid);
+
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const userRef = doc(database, 'users', user.uid);
+        
         const userSnap = await getDoc(userRef);
         const userTodos = userSnap.data().todos;
         setTodos(userTodos);
@@ -22,7 +24,12 @@ export default function Home({ user }) {
     }
 
     fetchTodos();
-  }, [user]);
+  }, [user, userRef]);
+
+  const unsub = onSnapshot(userRef, (doc) => {
+    const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
+    console.log(source, " data: ", doc.data());
+  });
 
   const handleAddNewTodo = () => {
     if (!!newTodo) {
@@ -38,7 +45,9 @@ export default function Home({ user }) {
 
   const handleCreateTodo = async () => {
     // get users collection, select item where uid === user.uid, get todos array, push newTodo to todos array, update todos array
-    console.log(newTodo);
+    await updateDoc(userRef, {
+      todos: [...todos, newTodo],
+    });
   };
   const cancelNewTodo = () => {
     setNewTodo(null);
