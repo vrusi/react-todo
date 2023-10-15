@@ -1,6 +1,3 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { getFirestore } from 'firebase/firestore/lite';
 import { useState } from "react";
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -9,22 +6,14 @@ import Home from './components/Home';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Navigate } from 'react-router-dom';
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { app } from './firebase';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCbALzKlJ9D2TAoVvZUCsgRPo_c92rRHIU",
-  authDomain: "react-todo-aaef3.firebaseapp.com",
-  projectId: "react-todo-aaef3",
-  storageBucket: "react-todo-aaef3.appspot.com",
-  messagingSenderId: "533985485787",
-  appId: "1:533985485787:web:d41c50dd0760c1a1643dfe"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 function App() {
-  const auth = getAuth(app);
   const [user, setUser] = useState(null);
+
+  const auth = getAuth(app);
 
   const handleLogout = () => {
     signOut(auth).then(() => {

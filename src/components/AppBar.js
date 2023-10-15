@@ -11,7 +11,7 @@ export default function AppBar({ user, onLogout }) {
     <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
       <Typography variant="h6" component="div">
         <Link to="/" style={{ textDecoration: 'none' }}>
-          Taskee
+          Todu
         </Link>
       </Typography>
 
