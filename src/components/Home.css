@@ -1,0 +1,8 @@
+.transitioned-todo-list {
+    transition: margin-top 0.3s ease-in-out; 
+}
+
+.todo-list {
+      margin-top: -22rem;
+
+  }

@@ -1,8 +1,9 @@
 import AddTaskOutlinedIcon from '@mui/icons-material/AddTaskOutlined';
 import { Button, Card, CardActions, CardContent, Grow, TextField } from "@mui/material";
-import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { database } from '../firebase';
+import './Home.css';
 
 export default function Home({ user }) {
   const [newTodo, setNewTodo] = useState(null);
@@ -13,7 +14,6 @@ export default function Home({ user }) {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        
         const userSnap = await getDoc(userRef);
         const userTodos = userSnap.data().todos;
         setTodos(userTodos);
@@ -34,6 +34,7 @@ export default function Home({ user }) {
   const handleAddNewTodo = () => {
     if (!!newTodo) {
       cancelNewTodo();
+      return;
     }
 
     setNewTodo({
@@ -44,11 +45,11 @@ export default function Home({ user }) {
   };
 
   const handleCreateTodo = async () => {
-    // get users collection, select item where uid === user.uid, get todos array, push newTodo to todos array, update todos array
     await updateDoc(userRef, {
       todos: [...todos, newTodo],
     });
   };
+
   const cancelNewTodo = () => {
     setNewTodo(null);
   }
@@ -60,22 +61,6 @@ export default function Home({ user }) {
   return (
     <div className="container">
       <h2>Hello, {user.email}</h2>
-
-      {todos.length === 0 ? (
-        <div>
-          You have no TODOs waiting for you.
-        </div>
-      ) : (
-        <div>
-          {todos.map((todo) => (
-            <div key={todo.title}>
-              <h3>{todo.title}</h3>
-              <p>{todo.description}</p>
-              <p>{todo.isCompleted ? 'Completed' : 'Not Completed'}</p>
-            </div>
-          ))}
-        </div>
-      )}
 
       <Button onClick={handleAddNewTodo} variant="text" className="w-100 my-2">
         <AddTaskOutlinedIcon className="mr-2" />
@@ -116,6 +101,24 @@ export default function Home({ user }) {
         </Card>
       </Grow>
 
+      <div className={!!newTodo ? 'transitioned-todo-list' : 'transitioned-todo-list todo-list'}>
+
+        {todos.length === 0 ? (
+          <div>
+            You have no TODOs waiting for you.
+          </div>
+        ) : (
+          <div>
+            {todos.map((todo) => (
+              <div key={todo.title}>
+                <h3>{todo.title}</h3>
+                <p>{todo.description}</p>
+                <p>{todo.isCompleted ? 'Completed' : 'Not Completed'}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
