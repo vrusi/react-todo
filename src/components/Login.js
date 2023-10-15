@@ -1,6 +1,8 @@
-import { Button, TextField, Alert } from '@mui/material';
+import { Alert, Button, TextField } from '@mui/material';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
+import { database } from '../firebase';
 import './Login.css';
 
 export default function Login() {
@@ -19,10 +21,16 @@ export default function Login() {
   };
 
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         setUser(userCredential.user);
+
+        await setDoc(doc(database, 'users', userCredential.user.uid), {
+          email: userCredential.user.email,
+          uid: userCredential.user.uid,
+          todos: [],
+        });
       })
       .catch((error) => {
         setErrorMessage(errorMapping[error.message]);
