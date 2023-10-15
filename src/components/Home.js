@@ -9,27 +9,18 @@ export default function Home({ user }) {
   const [newTodo, setNewTodo] = useState(null);
   const [todos, setTodos] = useState([]);
 
-  const userRef = doc(database, 'users', user.uid);
 
   useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const userSnap = await getDoc(userRef);
-        const userTodos = userSnap.data().todos;
-        setTodos(userTodos);
+    const userRef = doc(database, 'users', user.uid);
+    const unsubscribe = onSnapshot(userRef, (doc) => {
+      const userTodos = doc.data().todos;
+      setTodos(userTodos);
+    });
 
-      } catch (error) {
-        console.log(error);
-      }
-    }
+    return () => unsubscribe();
 
-    fetchTodos();
-  }, [user, userRef]);
+  }, []);
 
-  const unsub = onSnapshot(userRef, (doc) => {
-    const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
-    console.log(source, " data: ", doc.data());
-  });
 
   const handleAddNewTodo = () => {
     if (!!newTodo) {
@@ -45,6 +36,8 @@ export default function Home({ user }) {
   };
 
   const handleCreateTodo = async () => {
+    const userRef = doc(database, 'users', user.uid);
+
     await updateDoc(userRef, {
       todos: [...todos, newTodo],
     });
