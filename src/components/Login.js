@@ -27,10 +27,10 @@ export default function Login() {
       .catch((error) => {
         setErrorMessage(errorMapping[error.message]);
       })
-    };
-    
-    const handleSignIn = () => {
-      signInWithEmailAndPassword(auth, email, password)
+  };
+
+  const handleSignIn = () => {
+    signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setUser(userCredential.user);
       })
@@ -43,51 +43,55 @@ export default function Login() {
     <div className="container mx-auto">
       <h2>Welcome!</h2>
 
-      <div
-        className="mb-3"
-      >
-        <TextField
-          label="Email"
-          placeholder="your@email.com"
-          value={email}
-          variant="outlined"
-          onChange={(event) => setEmail(event.target.value)}
-          className='w-100'
-        />
-      </div>
-
-      <div>
-        <TextField
-          label="Password"
-          type="password"
-          value={password}
-          variant="outlined"
-          onChange={(event) => setPassword(event.target.value)}
-          className='w-100'
-        />
-      </div>
-
-      {errorMessage && (
-        <Alert severity="error" className="my-3">{errorMessage}</Alert>
-      )}
-
-      <div className="my-3">
-        <Button
-          variant="contained"
-          onClick={handleSignUp}
-          className='w-100 mb-3'
+      <form>
+        <div
+          className="mb-3"
         >
-          Sign Up
-        </Button>
+          <TextField
+            label="Email"
+            placeholder="your@email.com"
+            value={email}
+            variant="outlined"
+            onChange={(event) => setEmail(event.target.value)}
+            className='w-100'
+            autoComplete="username"
+          />
+        </div>
 
-        <Button
-          variant="text"
-          onClick={handleSignIn}
-          className="w-100"
-        >
-          or Sign In
-        </Button>
-      </div>
+        <div>
+          <TextField
+            label="Password"
+            type="password"
+            value={password}
+            variant="outlined"
+            onChange={(event) => setPassword(event.target.value)}
+            className='w-100'
+            autoComplete="current-password"
+          />
+        </div>
+
+        {errorMessage && (
+          <Alert severity="error" className="my-3">{errorMessage}</Alert>
+        )}
+
+        <div className="my-3">
+          <Button
+            variant="contained"
+            onClick={handleSignUp}
+            className='w-100 mb-3'
+          >
+            Sign Up
+          </Button>
+
+          <Button
+            variant="text"
+            onClick={handleSignIn}
+            className="w-100"
+          >
+            or Sign In
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }
