@@ -1,28 +1,32 @@
-import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-export default function TaskeeAppBar({ user, onLogout }) {
+export default function AppBar({ user, onLogout }) {
+  const location = useLocation();
+  const isNotLoginPath = location.pathname !== '/login';
+
   return (
     <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
       <Typography variant="h6" component="div">
-        <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
+        <Link to="/" style={{ textDecoration: 'none' }}>
           Taskee
         </Link>
       </Typography>
 
-      {user ? (
-        <Button color="inherit" onClick={() => onLogout()}>
-          Logout
-        </Button>
-      ) : (
-        <Button color="inherit">
-          <Link to="/login" style={{ textDecoration: 'none', color: 'white' }}>
-            Login
-          </Link>
-        </Button>
+      {isNotLoginPath && (
+        user ? (
+          <Button onClick={() => onLogout()}>
+            Logout
+          </Button>
+        ) : (
+          <Button>
+            <Link to="/login" style={{ textDecoration: 'none' }}>
+              Login
+            </Link>
+          </Button>
+        )
       )}
     </Toolbar>
   );

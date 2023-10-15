@@ -4,7 +4,7 @@ import { getFirestore } from 'firebase/firestore/lite';
 import { useState } from "react";
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import TaskeeAppBar from './components/AppBar';
+import AppBar from './components/AppBar';
 import Home from './components/Home';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -26,13 +26,9 @@ function App() {
   const auth = getAuth(app);
   const [user, setUser] = useState(null);
 
-  const handleLogin = () => {
-    console.log('login');
-  };
-
   const handleLogout = () => {
     signOut(auth).then(() => {
-      console.log('signed out')
+      setUser(null);
     }).catch((error) => {
       console.log(error)
     });
@@ -42,6 +38,8 @@ function App() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUser(user);
+    } else {
+      setUser(null);
     }
   });
 
@@ -50,7 +48,7 @@ function App() {
   return (
     <div className="App">
       <header>
-        <TaskeeAppBar user={user} onLogout={handleLogout} />
+        <AppBar user={user} onLogout={handleLogout} />
       </header>
 
       <main>
@@ -63,7 +61,7 @@ function App() {
 
           <Route path="/login" element={
             user ? <Navigate to="/" /> :
-              <Login user={user} onLogin={handleLogin} />} />
+              <Login user={user} />} />
         </Routes>
       </main>
     </div>

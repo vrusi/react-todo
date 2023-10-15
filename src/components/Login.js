@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, Alert } from '@mui/material';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import './Login.css';
@@ -8,35 +8,34 @@ export default function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState({});
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSignUp = () => {
-    console.log(email, password);
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log('userCredential', userCredential);
-        // Signed up
-        setUser(userCredential.user);
-        console.log(user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      })
+  const errorMapping = {
+    'Firebase: Error (auth/email-already-in-use).': 'The email address is already in use.',
+    'Firebase: Password should be at least 6 characters (auth/weak-password).': 'Password should be at least 6 characters.',
+    'Firebase: Error (auth/invalid-login-credentials).': 'Invalid login credentials.',
   };
 
-  const handleSignIn = () => {
-    signInWithEmailAndPassword(auth, email, password)
+
+  const handleSignUp = () => {
+    createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         setUser(userCredential.user);
-        console.log(user);
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+        setErrorMessage(errorMapping[error.message]);
+      })
+    };
+    
+    const handleSignIn = () => {
+      signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        setUser(userCredential.user);
+      })
+      .catch((error) => {
+        setErrorMessage(errorMapping[error.message]);
       });
   }
 
@@ -54,7 +53,7 @@ export default function Login() {
           variant="outlined"
           onChange={(event) => setEmail(event.target.value)}
           className='w-100'
-          />
+        />
       </div>
 
       <div>
@@ -68,10 +67,15 @@ export default function Login() {
         />
       </div>
 
+      {errorMessage && (
+        <Alert severity="error" className="my-3">{errorMessage}</Alert>
+      )}
+
       <div className="my-3">
         <Button
           variant="contained"
           onClick={handleSignUp}
+          className='w-100 mb-3'
         >
           Sign Up
         </Button>
