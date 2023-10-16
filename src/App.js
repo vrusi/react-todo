@@ -30,8 +30,6 @@ function App() {
     } else {
       setUser(null);
     }
-
-    console.log(user)
   });
 
   const isUserLoggedIn = user !== null;

@@ -1,8 +1,15 @@
 .transitioned-todo-list {
-    transition: margin-top 0.3s ease-in-out; 
+    transition: margin-top 0.3s ease-in-out;
 }
 
 .todo-list {
-      margin-top: -22rem;
+    margin-top: -23rem;
+}
 
-  }
+.card-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40vw;
+}
